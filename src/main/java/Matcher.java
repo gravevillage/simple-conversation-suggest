@@ -53,17 +53,35 @@ public class Matcher {
     
     return rank;
   }
-  
+
   public static void main(String[] args) {
     try {
       Matcher matcher = new Matcher("dict.txt");
-      List<Distance> res = matcher.generateRank(args[0]);
+      Responser resp = new Responser("res.txt");
+      List<Distance> res = matcher.generateRank(args[0].trim());
       for(int i=0;i<rank_max;i++){
-        System.out.println(""+res.get(i).id+":"+res.get(i).word);
+        System.out.println(""+res.get(i).distance+":"+res.get(i).word);
+        System.out.println("        "+resp.get(res.get(i).id));
       }
     } catch(Exception e){
       e.printStackTrace();
     }
   }
+}
+
+class Responser {
+  ArrayList<String> dict = new ArrayList<String>();
+
+  public Responser(String dictpath) throws Exception {
+    BufferedReader file = new BufferedReader(new InputStreamReader(new FileInputStream(dictpath),"UTF-8"));
+    String s;
+    while ((s=file.readLine())!=null){
+      dict.add(s);
+    }
+  }
+  public String get(int i){
+    return dict.get(i);
+  }
+
 
 }
