@@ -9,17 +9,17 @@ class Distance implements Comparable<Distance> {
   public String word;
   public float distance;
 
-  public Distance(String word , String[] dict, int id) {
-    this.word = word;
+  public Distance(String word , ArrayList<String> dict, int id) {
+    this.word = dict.get(id);
     this.id = id;
-    this.distance = ld.getDistance(word,dict[id]);
+    this.distance = ld.getDistance(word,dict.get(id));
   }
 
   public int compareTo(Distance other) {
     if(distance > other.distance){
-      return 1;
-    } else {
       return -1;
+    } else {
+      return 1;
     }
   }
 }
@@ -30,20 +30,18 @@ public class Matcher {
   static int rank_max=5;
   
   public Matcher(String dictpath) throws Exception {
-    int c = 0;
-    BufferedInputStream file = new BufferedInputStream(new FileInputStream(new File(dictpath)));
-
-    while (file.available()!=0){
-      dict.add(c, file.readLine());
-      c++;
+    BufferedReader file = new BufferedReader(new InputStreamReader(new FileInputStream(dictpath),"UTF-8"));
+    String s;
+    while ((s=file.readLine())!=null){
+      dict.add(s);
     }
   }
   
-  public String[] generateRank(String input) throws Exception {
-    List<Distance> rank = new List<Distance>();
+  public List<Distance> generateRank(String input) throws Exception {
+    List<Distance> rank = new ArrayList<Distance>();
     
     for(int i=0;i<dict.size();i++){
-      rank.add(new Distance(input, dict,i));
+      rank.add(new Distance(input, dict, i));
     }
     
     Collections.sort(rank);
@@ -53,14 +51,18 @@ public class Matcher {
       result[i] =  rank.get(i).word;
     }
     
-    return result;
+    return rank;
   }
   
-  public static void main(String args){
-    Matcher matcher = new Matcher("dict.txt");
-    String[] res = matcher.generateRank(args[0]);
-    for(int i=0;i<res.length;i++){
-      System.out.print(""+i+"\t"+res[i]);
+  public static void main(String[] args) {
+    try {
+      Matcher matcher = new Matcher("dict.txt");
+      List<Distance> res = matcher.generateRank(args[0]);
+      for(int i=0;i<rank_max;i++){
+        System.out.println(""+res.get(i).id+":"+res.get(i).word);
+      }
+    } catch(Exception e){
+      e.printStackTrace();
     }
   }
 
