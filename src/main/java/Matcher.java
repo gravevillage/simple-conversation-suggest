@@ -1,9 +1,10 @@
 import java.io.*;
 import java.util.*;
 import java.io.*;
-import org.apache.lucene.search.spell.LuceneLevenshteinDistance;
+import org.apache.lucene.search.spell.LevensteinDistance;
 
 class Distance implements Comparable<Distance> {
+  private static LevensteinDistance ld = new LevensteinDistance();
   public int id;
   public String word;
   public float distance;
@@ -25,7 +26,7 @@ class Distance implements Comparable<Distance> {
 
 public class Matcher {
   ArrayList<String> dict = new ArrayList<String>();
-  LuceneLevenshteinDistance ld = new LuceneLevenshteinDistance();
+
   static int rank_max=5;
   
   public Matcher(String dictpath) throws Exception {
