@@ -1,6 +1,8 @@
 import java.io.*;
 import java.util.*;
 import java.io.*;
+import java.util.logging.*;
+
 import org.apache.lucene.search.spell.LevensteinDistance;
 
 class Distance implements Comparable<Distance> {
@@ -24,10 +26,41 @@ class Distance implements Comparable<Distance> {
   }
 }
 
-public class Matcher {
+class Responser {
   ArrayList<String> dict = new ArrayList<String>();
 
+  public Responser(String dictpath) throws Exception {
+    BufferedReader file = new BufferedReader(new InputStreamReader(new FileInputStream(dictpath),"UTF-8"));
+    String s;
+    while ((s=file.readLine())!=null){
+      dict.add(s);
+    }
+  }
+  public String get(int i){
+    return dict.get(i);
+  }
+
+}
+
+
+public class Matcher {
+  private static final Logger logger;
+
+  ArrayList<String> dict = new ArrayList<String>();
   static int rank_max=5;
+
+  static {
+    try {
+      LogManager.getLogManager().readConfiguration(
+        Matcher.class.getResourceAsStream("logging.properties"));
+    } catch (SecurityException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    logger = Logger.getLogger(Matcher.class.getName());
+  }
+
   
   public Matcher(String dictpath) throws Exception {
     BufferedReader file = new BufferedReader(new InputStreamReader(new FileInputStream(dictpath),"UTF-8"));
@@ -47,7 +80,7 @@ public class Matcher {
     Collections.sort(rank);
     String[] result = new String[rank_max];
     
-    for(int i=0;i<rank_max;i++){
+    for(int i=0;(i<rank_max)&&(i<rank.size());i++){
       result[i] =  rank.get(i).word;
     }
     
@@ -59,9 +92,10 @@ public class Matcher {
       Matcher matcher = new Matcher("dict.txt");
       Responser resp = new Responser("res.txt");
       List<Distance> res = matcher.generateRank(args[0].trim());
-      for(int i=0;i<rank_max;i++){
-        System.out.println(""+res.get(i).distance+":"+res.get(i).word);
-        System.out.println("        "+resp.get(res.get(i).id));
+      for(int i=0;(i<rank_max&&i<res.size());i++){
+        System.out.println(""+res.get(i).distance+","+resp.get(res.get(i).id));
+        logger.log(Level.INFO, ""+res.get(i).distance+":"+res.get(i).word);
+        logger.log(Level.INFO, "    ->"+resp.get(res.get(i).id));
       }
     } catch(Exception e){
       e.printStackTrace();
@@ -69,19 +103,3 @@ public class Matcher {
   }
 }
 
-class Responser {
-  ArrayList<String> dict = new ArrayList<String>();
-
-  public Responser(String dictpath) throws Exception {
-    BufferedReader file = new BufferedReader(new InputStreamReader(new FileInputStream(dictpath),"UTF-8"));
-    String s;
-    while ((s=file.readLine())!=null){
-      dict.add(s);
-    }
-  }
-  public String get(int i){
-    return dict.get(i);
-  }
-
-
-}
