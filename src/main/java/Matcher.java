@@ -47,7 +47,7 @@ public class Matcher {
   private static final Logger logger;
 
   ArrayList<String> dict = new ArrayList<String>();
-  static int rank_max=5;
+  static int rank_max=4;
 
   static {
     try {
@@ -93,9 +93,10 @@ public class Matcher {
       Responser resp = new Responser("res.txt");
       List<Distance> res = matcher.generateRank(args[0].trim());
       for(int i=0;(i<rank_max&&i<res.size());i++){
-        System.out.println(""+res.get(i).distance+","+resp.get(res.get(i).id));
-        logger.log(Level.INFO, ""+res.get(i).distance+":"+res.get(i).word);
-        logger.log(Level.INFO, "    ->"+resp.get(res.get(i).id));
+          System.out.print("\""+resp.get(res.get(i).id)+"\" ");
+//        System.out.println(""+res.get(i).distance+","+resp.get(res.get(i).id));
+//        logger.log(Level.INFO, ""+res.get(i).distance+":"+res.get(i).word);
+//        logger.log(Level.INFO, "    ->"+resp.get(res.get(i).id));
       }
     } catch(Exception e){
       e.printStackTrace();
