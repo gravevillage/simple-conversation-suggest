@@ -93,8 +93,14 @@ public class Matcher {
       Responser resp = new Responser("res.txt");
       List<Distance> res = matcher.generateRank(args[0].trim());
       for(int i=0;(i<rank_max&&i<res.size());i++){
-          System.out.print("\""+resp.get(res.get(i).id)+"\" ");
+        // one line
+//          System.out.print("\""+resp.get(res.get(i).id)+"\" ");
+        // multi line
+          System.out.println(resp.get(res.get(i).id));
+        
 //        System.out.println(""+res.get(i).distance+","+resp.get(res.get(i).id));
+//        System.out.println(""+res.get(i).distance+":"+res.get(i).word);
+//        System.out.println("    ->"+resp.get(res.get(i).id));
 //        logger.log(Level.INFO, ""+res.get(i).distance+":"+res.get(i).word);
 //        logger.log(Level.INFO, "    ->"+resp.get(res.get(i).id));
       }
